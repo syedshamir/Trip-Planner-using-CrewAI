@@ -28,7 +28,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-class TripRequest(BaseModel):
+class TripRequest(BaseModel): #this info is required from the user to the client
     origin: str = Field(..., 
         example="Bangalore, India",
         description="Your current location")
@@ -45,10 +45,10 @@ class TripRequest(BaseModel):
         example="2 adults who love swimming, dancing, hiking, shopping, local food, water sports adventures and rock climbing",
         description="Your interests and trip details")
 
-class TripResponse(BaseModel):
+class TripResponse(BaseModel): #this info is returned to the user from the client
     status: str
     message: str
-    itinerary: Optional[str] = None
+    itinerary: Optional[str] = None #final result
     error: Optional[str] = None
 
 class Settings:
@@ -57,7 +57,7 @@ class Settings:
         self.SERPER_API_KEY = os.getenv("SERPER_API_KEY")
         self.BROWSERLESS_API_KEY = os.getenv("BROWSERLESS_API_KEY")
 
-@lru_cache()
+@lru_cache() #to catch env variables
 def get_settings():
     return Settings()
 
@@ -163,7 +163,7 @@ async def plan_trip(
             trip_request.interests
         )
         
-        itinerary = trip_crew.run()
+        itinerary = trip_crew.run() #saving response inside itinerary variable
         
         # Ensure itinerary is a string
         if not isinstance(itinerary, str):
@@ -190,5 +190,5 @@ async def health_check():
     }
 
 if __name__ == "__main__":
-    import uvicorn
+    import uvicorn # Run the FastAPI app with Uvicorn server
     uvicorn.run(app, host="0.0.0.0", port=8000)
